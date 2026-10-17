@@ -42,7 +42,7 @@ class SteigerPlainSettingsUi : SteigerSettingsUi {
         override val component: JComponent = panel {
             row("Node interpreter:") {
                 cell(pathField).resizableColumn()
-            }.resizableRow().comment(
+            }.comment(
                 "JavaScript support is unavailable in this IDE, so the interpreter selector is disabled. " +
                     "Enter a Node.js executable path, or leave empty to use node from PATH."
             )

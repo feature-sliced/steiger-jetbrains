@@ -38,7 +38,7 @@ class SteigerJsSettingsUi : SteigerSettingsUi {
             row { cell(useDefaultCheckBox) }
             row("Node interpreter:") {
                 cell(interpreterField).resizableColumn()
-            }.resizableRow()
+            }
         }
         override fun isModified(): Boolean =
             useDefaultCheckBox.isSelected != settings.useProjectDefault ||
