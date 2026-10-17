@@ -12,13 +12,27 @@
         for Feature-Sliced Design via the Language Server Protocol.<br>
         Highlights project architecture violations reported by steiger directly in the editor.
         ]]></description>
-
     <!-- LSP API module: present in all commercial JetBrains IDEs, absent in IDEA CE / Android Studio -->
     <depends>com.intellij.modules.lsp</depends>
+    <!-- Optional: enables the run-configuration-style Node interpreter selector -->
+    <depends optional="true" config-file="steiger-js.xml">JavaScript</depends>
+
+    <extensionPoints>
+        <extensionPoint name="settingsUi"
+                        interface="org.featuresliced.steiger.settings.SteigerSettingsUi"
+                        dynamic="true"/>
+    </extensionPoints>
 
     <extensions defaultExtensionNs="com.intellij">
         <platform.lsp.serverSupportProvider
                 implementation="org.featuresliced.steiger.lsp.SteigerLspServerSupportProvider"/>
+
+        <projectConfigurable
+                groupId="tools"
+                id="steiger"
+                displayName="Steiger"
+                nonDefaultProject="true"
+                instance="org.featuresliced.steiger.settings.SteigerConfigurable"/>
     </extensions>
 
 </idea-plugin>

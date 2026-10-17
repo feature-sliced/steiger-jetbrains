@@ -1,3 +1,4 @@
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
@@ -13,9 +14,18 @@ dependencies {
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
         intellijIdea("2025.3.6.1")
+        bundledPlugin("JavaScript")
         testFramework(TestFrameworkType.Platform)
 
         // Add plugin dependencies for compilation here, for example:
         // bundledPlugin("com.intellij.java")
+    }
+}
+
+// Launches WebStorm with the plugin installed: ./gradlew runWebStorm
+intellijPlatformTesting {
+    runIde.register("runWebStorm") {
+        type = IntelliJPlatformType.WebStorm
+        version = "2025.3"
     }
 }

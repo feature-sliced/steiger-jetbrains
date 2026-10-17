@@ -5,6 +5,7 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
+import org.featuresliced.steiger.settings.SteigerInterpreter
 
 /**
  * File extensions steiger lints: the JS/TS language family, matching the steiger VS Code extension.
@@ -27,7 +28,8 @@ class SteigerLspServerDescriptor(project: Project) :
             ?: throw ExecutionException("Bundled steiger language server is missing from the plugin")
         val projectDir = project.basePath
             ?: throw ExecutionException("Project has no base directory")
-        return GeneralCommandLine("node", script.toString())
+        val node = SteigerInterpreter.resolveNodePath(project)
+        return GeneralCommandLine(node, script.toString())
             .withWorkDirectory(projectDir)
             .withEnvironment("NODE_OPTIONS", "--enable-source-maps")
     }

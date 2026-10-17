@@ -19,6 +19,10 @@ object SteigerServerBundle {
     private const val PLUGIN_ID = "org.feature-sliced.steiger.jetbrains"
     private const val RESOURCE_PATH = "/steiger/language-server.js"
 
+    // THROWAWAY (dev only): re-extract the server on every IDE session start, even if a cached
+    // copy for this plugin version already exists. MUST be removed before release.
+    private const val ALWAYS_REPLACE = true
+
     @Volatile
     private var extracted: Path? = null
 
@@ -29,7 +33,7 @@ object SteigerServerBundle {
             val version = PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID))?.version ?: return null
             val dir = PathManager.getSystemDir().resolve("steiger-lsp").resolve(version)
             val target = dir.resolve("language-server.js")
-            if (!Files.isRegularFile(target)) {
+            if (ALWAYS_REPLACE || !Files.isRegularFile(target)) {
                 Files.createDirectories(dir)
                 val resource = SteigerServerBundle::class.java.getResource(RESOURCE_PATH) ?: return null
                 val tmp = dir.resolve("language-server.js.tmp")

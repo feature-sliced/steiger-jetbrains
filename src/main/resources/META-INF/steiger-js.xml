@@ -1,0 +1,5 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="org.feature-sliced.steiger.jetbrains">
+        <settingsUi implementation="org.featuresliced.steiger.settings.SteigerJsSettingsUi"/>
+    </extensions>
+</idea-plugin>
