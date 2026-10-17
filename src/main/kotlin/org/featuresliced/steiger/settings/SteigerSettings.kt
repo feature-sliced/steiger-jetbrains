@@ -23,6 +23,12 @@ class SteigerSettings : PersistentStateComponent<SteigerSettings> {
     /** Plain Node.js executable path, used when the JavaScript plugin is unavailable. */
     var nodePath: String? = null
 
+    /** Run the language server bundled with the plugin instead of a custom one. */
+    var useBundledLanguageServer: Boolean = true
+
+    /** Path to a custom steiger language server (a Node.js script), when [useBundledLanguageServer] is false. */
+    var customLanguageServerPath: String? = null
+
     override fun getState(): SteigerSettings = this
 
     override fun loadState(state: SteigerSettings) = XmlSerializerUtil.copyBean(state, this)

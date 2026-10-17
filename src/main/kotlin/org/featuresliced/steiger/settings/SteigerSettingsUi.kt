@@ -1,11 +1,15 @@
 package org.featuresliced.steiger.settings
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.platform.lsp.api.LspServerManager
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.panel
+import org.featuresliced.steiger.lsp.SteigerLspServerSupportProvider
 import javax.swing.JComponent
-import javax.swing.JLabel
 
 /**
  * A settings panel abstraction so the JavaScript-plugin-backed UI is only loaded
@@ -28,16 +32,26 @@ interface SteigerSettingsPanel {
 }
 
 /**
- * Fallback UI used when the JavaScript plugin is unavailable: a plain
- * executable path field.
+ * Fallback UI used when the JavaScript plugin is unavailable: plain path fields
+ * for the Node interpreter and the language server.
  */
 class SteigerPlainSettingsUi : SteigerSettingsUi {
-        private val pathField = JBTextField().apply { columns = 36 }
     override fun createPanel(project: Project, settings: SteigerSettings): SteigerSettingsPanel =
-        SteigerPlainSettingsPanel(settings)
+        SteigerPlainSettingsPanel(project, settings)
 
-    private class SteigerPlainSettingsPanel(private val settings: SteigerSettings) : SteigerSettingsPanel {
+    private class SteigerPlainSettingsPanel(
+        private val project: Project,
+        private val settings: SteigerSettings,
+    ) : SteigerSettingsPanel {
         private val pathField = JBTextField()
+        private val useBundledServerCheckBox = JBCheckBox("Use the bundled language server")
+        private val serverPathField = TextFieldWithBrowseButton().apply {
+            addBrowseFolderListener(project, FileChooserDescriptorFactory.singleFile())
+        }
+
+        init {
+            useBundledServerCheckBox.addItemListener { serverPathField.isEnabled = !useBundledServerCheckBox.isSelected }
+        }
 
         override val component: JComponent = panel {
             row("Node interpreter:") {
@@ -46,16 +60,32 @@ class SteigerPlainSettingsUi : SteigerSettingsUi {
                 "JavaScript support is unavailable in this IDE, so the interpreter selector is disabled. " +
                     "Enter a Node.js executable path, or leave empty to use node from PATH."
             )
+            row { cell(useBundledServerCheckBox) }
+            row("Language server:") {
+                cell(serverPathField).resizableColumn()
+            }.comment("A custom steiger language server (a Node.js script, run with the interpreter above)")
         }
 
-        override fun isModified(): Boolean = pathField.text.trim() != (settings.nodePath ?: "")
+        override fun isModified(): Boolean =
+            pathField.text.trim() != (settings.nodePath ?: "") ||
+                useBundledServerCheckBox.isSelected != settings.useBundledLanguageServer ||
+                (!useBundledServerCheckBox.isSelected && serverPathField.text.trim() != (settings.customLanguageServerPath ?: ""))
 
         override fun reset() {
             pathField.text = settings.nodePath ?: ""
+            useBundledServerCheckBox.isSelected = settings.useBundledLanguageServer
+            serverPathField.text = settings.customLanguageServerPath ?: ""
+            serverPathField.isEnabled = !useBundledServerCheckBox.isSelected
         }
 
         override fun apply() {
             settings.nodePath = pathField.text.trim().ifBlank { null }
+            settings.useBundledLanguageServer = useBundledServerCheckBox.isSelected
+            settings.customLanguageServerPath =
+                if (useBundledServerCheckBox.isSelected) null
+                else serverPathField.text.trim().ifBlank { null }
+            LspServerManager.getInstance(project)
+                .stopAndRestartIfNeeded(SteigerLspServerSupportProvider::class.java)
         }
     }
 }
