@@ -20,7 +20,7 @@ interface SteigerSettingsUi {
 
     companion object {
         val EP_NAME: ExtensionPointName<SteigerSettingsUi> =
-            ExtensionPointName.create("org.feature-sliced.steiger.jetbrains.settingsUi")
+            ExtensionPointName.create("org.featuresliced.steiger.settingsUi")
     }
 }
 

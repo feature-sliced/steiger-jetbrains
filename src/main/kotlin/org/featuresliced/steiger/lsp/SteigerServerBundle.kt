@@ -16,7 +16,7 @@ import java.nio.file.StandardCopyOption
  */
 object SteigerServerBundle {
 
-    private const val PLUGIN_ID = "org.feature-sliced.steiger.jetbrains"
+    private const val PLUGIN_ID = "org.featuresliced.steiger"
     private const val RESOURCE_PATH = "/steiger/language-server.js"
 
     // THROWAWAY (dev only): re-extract the server on every IDE session start, even if a cached

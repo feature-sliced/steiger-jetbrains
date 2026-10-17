@@ -2,13 +2,12 @@
 <idea-plugin>
     <id>org.featuresliced.steiger</id>
     <name>Steiger</name>
-    <version>0.1.0</version>
 
-    <vendor url="https://github.com/feature-sliced">feature-sliced</vendor>
+    <vendor url="https://github.com/feature-sliced">FeatureSliced</vendor>
 
     <description><![CDATA[
         Integrates the <a href="https://github.com/feature-sliced/steiger">steiger</a> linter
-        for Feature-Sliced Design via the Language Server Protocol.<br>
+        via the Language Server Protocol.<br>
         Highlights project architecture violations reported by steiger directly in the editor.
         ]]></description>
     <!-- LSP API module: present in all commercial JetBrains IDEs, absent in IDEA CE / Android Studio -->
