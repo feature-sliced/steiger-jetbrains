@@ -19,9 +19,7 @@ object SteigerServerBundle {
     private const val PLUGIN_ID = "org.featuresliced.steiger"
     private const val RESOURCE_PATH = "/steiger/language-server.js"
 
-    // THROWAWAY (dev only): re-extract the server on every IDE session start, even if a cached
-    // copy for this plugin version already exists. MUST be removed before release.
-    private const val ALWAYS_REPLACE = true
+    private const val ALWAYS_REPLACE = false
 
     @Volatile
     private var extracted: Path? = null
