@@ -2,3 +2,4 @@
 .idea
 .intellijPlatform
 build
+src/main/resources/steiger/language-server.js
